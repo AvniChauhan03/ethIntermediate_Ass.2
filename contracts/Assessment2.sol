@@ -2,11 +2,11 @@
 pragma solidity ^0.8.9;
 
 contract Assessment {
-    address payable public owner;
+    address payable private owner;
     uint256 public balance;
 
-    event Deposit(address indexed sender, uint256 amount);
-    event Withdraw(address indexed sender, uint256 amount);
+    event Deposit(uint256 amount);
+    event Withdraw(uint256 amount);
 
     constructor(uint256 initBalance) payable {
         owner = payable(msg.sender);
@@ -17,22 +17,27 @@ contract Assessment {
         return balance;
     }
 
-    function deposit() public payable {
+    function deposit(uint256 _amount) public payable {
+        // Make sure this is the owner
         require(msg.sender == owner, "You are not the owner of this account");
-        balance += msg.value;
-        emit Deposit(msg.sender, msg.value);
-    }
 
-    error InsufficientBalance(uint256 balance, uint256 withdrawAmount);
+        // Perform transaction
+        balance += _amount;
+
+        // Emit the event
+        emit Deposit(_amount);
+    }
 
     function withdraw(uint256 _withdrawAmount) public {
         require(msg.sender == owner, "You are not the owner of this account");
-        if (balance < _withdrawAmount) {
-            revert InsufficientBalance(balance, _withdrawAmount);
-        }
+
+        // Check for sufficient balance before withdrawing
+        require(balance >= _withdrawAmount, "Insufficient balance for withdrawal");
+
+        // Withdraw the given amount
         balance -= _withdrawAmount;
-        emit Withdraw(msg.sender, _withdrawAmount);
-        (bool success, ) = msg.sender.call{value: _withdrawAmount}("");
-        require(success, "Transfer failed");
-    }
+
+        // Emit the event
+        emit Withdraw(_withdrawAmount);
+    }
 }
