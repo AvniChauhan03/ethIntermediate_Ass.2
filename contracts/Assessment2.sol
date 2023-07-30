@@ -2,14 +2,14 @@
 pragma solidity ^0.8.9;
 
 contract Assessment {
-    address payable private owner;
+    address public owner;
     uint256 public balance;
 
-    event Deposit(uint256 amount);
-    event Withdraw(uint256 amount);
+    event Deposit(address indexed account, uint256 amount);
+    event Withdraw(address indexed account, uint256 amount);
 
     constructor(uint256 initBalance) payable {
-        owner = payable(msg.sender);
+        owner = msg.sender;
         balance = initBalance;
     }
 
@@ -17,27 +17,40 @@ contract Assessment {
         return balance;
     }
 
-    function deposit(uint256 _amount) public payable {
-        // Make sure this is the owner
+    modifier onlyOwner() {
         require(msg.sender == owner, "You are not the owner of this account");
-
-        // Perform transaction
-        balance += _amount;
-
-        // Emit the event
-        emit Deposit(_amount);
+        _;
     }
 
-    function withdraw(uint256 _withdrawAmount) public {
-        require(msg.sender == owner, "You are not the owner of this account");
+    function deposit(uint256 _amount) public payable onlyOwner {
+        uint256 _previousBalance = balance;
 
-        // Check for sufficient balance before withdrawing
-        require(balance >= _withdrawAmount, "Insufficient balance for withdrawal");
+        // Perform the transaction
+        balance += _amount;
+
+        // Assert transaction completed successfully
+        assert(balance == _previousBalance + _amount);
+
+        // Emit the event
+        emit Deposit(msg.sender, _amount);
+    }
+
+    // Custom error
+    error InsufficientBalance(uint256 balance, uint256 withdrawAmount);
+
+    function withdraw(uint256 _withdrawAmount) public onlyOwner {
+        uint256 _previousBalance = balance;
+        if (balance < _withdrawAmount) {
+            revert InsufficientBalance(balance, _withdrawAmount);
+        }
 
         // Withdraw the given amount
         balance -= _withdrawAmount;
 
+        // Assert the balance is correct
+        assert(balance == _previousBalance - _withdrawAmount);
+
         // Emit the event
-        emit Withdraw(_withdrawAmount);
+        emit Withdraw(msg.sender, _withdrawAmount);
     }
 }
