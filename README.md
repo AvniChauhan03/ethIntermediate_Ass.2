@@ -1,12 +1,12 @@
-FUNCTION FRONTEND:
+# FUNCTION FRONTEND:
 
 This repository contains a simple Solidity smart contract and a basic frontend application that interacts with the contract and displays its values.
 
-FRONTEND DISCRIPTION:
+# FRONTEND DISCRIPTION:
 
 The frontend is a simple HTML and JavaScript application that allows you to interact with the SimpleContract and display its values.
 
-PREREQUISITES:
+# PREREQUISITES:
 
 To use this frontend, you'll need the following:
 
@@ -14,7 +14,7 @@ An Ethereum provider (e.g., MetaMask)
 
 Contract address
 
-GETTING STARTED:
+# GETTING STARTED:
 
 Clone this repository or copy the code for the smart contract and frontend files.
 
@@ -36,12 +36,12 @@ Connect your Ethereum provider (e.g., MetaMask) to the network where your Assess
 
 Interact with the contract using the provided form inputs and buttons in the frontend.
 
-AUTHORS
+# AUTHORS
 
 Avni Chauhan
 
 @AvniChauhan03
 
-LISENCE
+# LISENCE
 
 This project is licensed under the MIT License - see the LICENSE.md file for details
